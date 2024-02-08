@@ -1,0 +1,72 @@
+﻿@model IEnumerable< MyProject.ViewModels.ProductViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Product</h1>
+
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-success">Create New</a>
+        <button class="btn btn-dark" onclick="location.pathname = '@Url.Action("Index", "AuditView")'">Audit View</button>
+        <button class="btn btn-info" onclick="location.pathname = 'swagger'">Swagger</button>
+    </p>
+    
+}
+<table class="table">
+    <thead>
+        <tr class="bold">
+            <th>
+                Title
+            </th>
+            <th>
+                Quantiy
+            </th>
+            <th>
+                Price
+            </th>
+
+            <th>
+                Vat
+            </th>
+          
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantiy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPriceWithVAT)
+                </td>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-success">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    </td>
+                    
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<style>
+    .bold{
+        font-weight:bold;
+        font-size:20px
+    }
+</style>

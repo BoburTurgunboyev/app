@@ -1,0 +1,91 @@
+﻿@model MyProject.ViewModels.ProductAuditViewModel
+@{
+    ViewBag.Title = "Audit Log Table";
+}
+
+<div class="d-xl-flex justify-content-between my-3">
+    <h2>Audit Log Table</h2>
+    <div class="audit-filter-form d-xl-flex gap-3">
+        @using (Html.BeginForm("Index", "AuditView", FormMethod.Get))
+        {
+            <div>
+                <label for="Name">User name</label>
+                <input type="text" id="Name" name="Name" value="@Model.Name" />
+            </div>
+
+            <div>
+                <label for="FromDate">From Date:</label>
+                <input type="date" id="FromDate" name="fromDate" value="@Model.FromDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <div>
+                <label for="ToDate">To Date:</label>
+                <input type="date" id="ToDate" name="toDate" value="@Model.ToDate.ToString("yyyy-MM-dd")" />
+            </div>
+
+            <button type="submit" class="btn btn-secondary">Filter</button>
+        }
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Action</th>
+                <th>User Name</th>
+                <th>Controller Name</th>
+                <th>Date Time</th>
+                <th>Old Value</th>
+                <th>New Value</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var log in Model.FilteredLogs)
+            {
+                <tr>
+                    <td>@log.Id</td>
+                    <td>@log.Action</td>
+                    <td>@log.UserName</td>
+                    <td>@log.ControllerName</td>
+                    <td>@log.DateTime</td>
+                    <td>@log.OldValue</td>
+                    <td>@log.NewValue</td>
+                </tr>
+            }
+            @if (Model.FilteredLogs == null || !Model.FilteredLogs.Any())
+            {
+                <tr>
+                    <td>
+                        Audit not found
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Attach change event to From Date input
+            $("#FromDate").on("change", function () {
+                var fromDateValue = $(this).val();
+
+                // Set the minimum value of To Date to be the selected From Date
+                $("#ToDate").attr("min", fromDateValue);
+            });
+
+            // Attach change event to To Date input
+            $("#ToDate").on("change", function () {
+                var toDateValue = $(this).val();
+
+                // Set the maximum value of From Date to be the selected To Date
+                $("#FromDate").attr("max", toDateValue);
+            });
+        });
+    </script>
+}
